@@ -12,8 +12,6 @@ namespace Webapi.EfConfigurations
             builder.HasKey(e => e.UserCredentialsID);
             builder.Property(e => e.Email).IsRequired();
             builder.Property(e => e.PasswordHashed).IsRequired();
-
-            builder.HasOne(e => e.User).WithOne(e => e.UserCredentials).IsRequired();
         }
     }
 }

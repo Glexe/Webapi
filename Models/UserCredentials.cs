@@ -5,6 +5,5 @@
         public int UserCredentialsID { get; set; }
         public string Email { get; set; }
         public string PasswordHashed { get; set; }
-        public User User { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.Birthdate);
 
             builder.HasOne(e => e.Selfie);
-            builder.HasOne(e => e.UserCredentials).WithOne(e => e.User).IsRequired();
+            builder.HasOne(e => e.UserCredentials);
         }
     }
 }

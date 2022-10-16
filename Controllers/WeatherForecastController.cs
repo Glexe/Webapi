@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Webapi.Contexts;
 using Webapi.Models;
 
@@ -17,10 +18,25 @@ namespace Webapi.Controllers
             _dbContext = applicationDbContext;
         }
 
-        [HttpGet(Name = "Test")]
-        public ActionResult<User> Get()
+        [HttpGet]
+        public ActionResult<Review> GetReview()
         {
-            return Ok(_dbContext.Users.FirstOrDefault());
+            return Ok(_dbContext.Appointments.FirstOrDefault());
+        }
+
+        [HttpPost]
+        public ActionResult AddReview()
+        {
+            var review = new Review()
+            {
+                Rating = 5,
+                Comment = "Very cool",
+                PostedTimestamp = DateTime.Now,
+                Appointment = new Appointment() { CalendarAppointmentURL = "google.com", Date = DateTime.Now, IsConfirmed = true, AppointmentType = new AppointmentType() { LengthMinutes = 33, Name = "Haircut", Price = 55 }, User = new User() { Name = "Hlib", Surname = "Pivniev2", Birthdate = DateTime.Today.AddYears(-20), Selfie = new Picture() { Filepath = "E:/Pictures/defaultAvatar.png" }, UserCredentials = new UserCredentials() { Email = "gl.pvn2@gmail.com", PasswordHashed = "test123" } } }
+            };
+            _dbContext.Reviews.Add(review);
+            _dbContext.SaveChanges();
+            return Ok(_dbContext.Reviews.FirstOrDefault());
         }
     }
 }
