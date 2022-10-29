@@ -7,25 +7,46 @@ namespace Webapi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class AppointmentsController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<AppointmentsController> _logger;
         private readonly ApplicationDbContext _dbContext;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, ApplicationDbContext applicationDbContext)
+        public AppointmentsController(ILogger<AppointmentsController> logger, ApplicationDbContext applicationDbContext)
         {
             _logger = logger;
             _dbContext = applicationDbContext;
         }
 
         [HttpGet]
-        public ActionResult<Review> GetReview()
+        public ActionResult<IEnumerable<Review>> Get()
         {
-            return Ok(_dbContext.Appointments.FirstOrDefault());
+            return Ok(_dbContext.Appointments);
+        }
+
+        [HttpGet("/{appointmentId}")]
+        public ActionResult<Review> Get(int appointmentId)
+        {
+            _dbContext.Appointments.Load();
+            return Ok(_dbContext.Appointments.FirstOrDefault(e => e.AppointmentID == appointmentId));
+        }
+        
+        [HttpDelete("/{appointmentId}")]
+        public ActionResult<Review> Delete(int appointmentId)
+        {
+            var appointmentToDelete = _dbContext.Appointments.FirstOrDefault(e => e.AppointmentID == appointmentId);
+            if(appointmentToDelete != null)
+            {
+                _dbContext.Appointments.Remove(appointmentToDelete);
+                _dbContext.SaveChanges();
+                return Ok(appointmentToDelete);
+            }
+
+            return NotFound();
         }
 
         [HttpPost]
-        public ActionResult AddReview()
+        public ActionResult<Review> Add()
         {
             var review = new Review()
             {
